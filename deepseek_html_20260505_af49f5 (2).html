@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atendimentos à Produção — Inova (TV)</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#111; --black2:#1e1e1e; --black3:#2a2a2a;
+  --red:#cc1010; --red2:#e8000d; --red-dk:#7a0000; --red-lt:#fff0f0;
+  --white:#fff; --off:#f5f5f5;
+  --g1:#eeeeee; --g2:#d8d8d8; --g3:#a0a0a0; --g4:#606060;
+  --txt:#111; --txt2:#333; --mut:#666;
+  --green:#1a7a3c; --green-lt:#e6f7ed;
+  --amber:#b06000; --amber-lt:#fff3e0;
+  --blue:#1558a0; --blue-lt:#e8f1fb;
+  --purple:#5c35b0; --purple-lt:#f0ecff;
+  --sh:0 4px 20px rgba(0,0,0,.13);
+  --sh2:0 8px 32px rgba(0,0,0,.20);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Open Sans",sans-serif;background:var(--black2);color:var(--txt);font-size:15px;min-height:100vh;overflow-x:hidden}
+
+/* Stripe */
+.stripe{height:5px;background:var(--red)}
+
+/* NAV */
+.nav{background:var(--black);height:72px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
+.brand{display:flex;align-items:center;gap:14px}
+.logo-txt{font-family:"Montserrat",sans-serif;font-weight:900;font-size:24px;color:#fff;letter-spacing:2px}
+.logo-txt b{color:var(--red)}
+.logo-sm{font-family:"Montserrat",sans-serif;font-size:7px;font-weight:600;color:var(--g3);letter-spacing:2.5px;text-transform:uppercase}
+.brand-sep{width:1px;height:28px;background:var(--black3)}
+.page-lbl{font-family:"Montserrat",sans-serif;font-weight:700;font-size:16px;color:var(--g3)}
+.nav-r{display:flex;align-items:center;gap:12px}
+.nav-pill{display:flex;align-items:center;gap:8px;padding:6px 16px;background:var(--black2);border:1px solid var(--black3);border-radius:6px}
+.sdot{width:10px;height:10px;border-radius:50%;background:var(--g3);flex-shrink:0;transition:background .3s}
+.sdot.ok{background:#22c55e;animation:blink 2.5s ease-in-out infinite}
+.sdot.err{background:var(--red)}.sdot.wait{background:#f59e0b}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.stxt{font-family:"Montserrat",sans-serif;font-size:13px;font-weight:700;color:var(--g3)}
+.cdtxt{font-family:"Montserrat",sans-serif;font-size:11px;color:var(--g4)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:6px;cursor:pointer;border:1px solid var(--black3);background:var(--black2);color:var(--g3);font-family:"Montserrat",sans-serif;font-weight:700;font-size:12px;white-space:nowrap;transition:all .15s}
+.btn:hover{background:var(--black3);color:#fff;border-color:var(--g4)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.primary:hover{background:var(--red2)}
+.btn.full{width:100%;justify-content:center;padding:14px;font-size:16px}
+
+/* LOGIN */
+.login-bg{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 77px);padding:2rem;background:var(--black2)}
+.login-card{background:var(--white);border:1px solid var(--g2);border-top:5px solid var(--red);border-radius:10px;width:100%;max-width:600px;box-shadow:var(--sh2);overflow:hidden}
+.lhdr{background:var(--black);padding:22px 30px;display:flex;align-items:center;gap:14px}
+.lhdr-ico{width:42px;height:42px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.lhdr h2{font-family:"Montserrat",sans-serif;font-weight:800;font-size:20px;color:#fff}
+.lhdr p{font-family:"Montserrat",sans-serif;font-size:13px;color:var(--g3);margin-top:3px}
+.lbody{padding:30px}
+.frow{margin-bottom:20px}
+.frow label{display:block;font-family:"Montserrat",sans-serif;font-size:12px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.frow input,.frow select{width:100%;background:var(--off);border:1px solid var(--g2);border-radius:6px;padding:14px;font-size:16px;color:var(--txt);outline:none;font-family:"Open Sans",sans-serif;transition:border-color .15s}
+.frow input:focus,.frow select:focus{border-color:var(--red);background:#fff}
+.frow input[type=password]{letter-spacing:6px}
+.fhint{font-size:13px;color:var(--mut);margin-top:6px;line-height:1.5}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.check-row{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.check-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--red)}
+.check-row label{font-size:14px;color:var(--txt);font-weight:600}
+.lfoot{background:var(--off);padding:20px 30px;border-top:1px solid var(--g2);display:flex;flex-direction:column;gap:12px}
+.msg-err{background:var(--red-lt);color:var(--red-dk);border:1px solid #f5b0b0;border-radius:6px;padding:12px 16px;font-size:15px;line-height:1.5;display:none}
+.msg-ok{background:var(--green-lt);color:var(--green);border:1px solid #86efac;border-radius:6px;padding:12px 16px;font-size:15px;line-height:1.5;display:none}
+.login-spin{display:none;text-align:center;padding:10px}
+.login-spin .spin-big{width:30px;height:30px;margin:0 auto 8px}
+
+/* APP */
+.app{display:none;flex-direction:column;min-height:calc(100vh - 77px);background:#1a1a1a}
+.b429{display:none;align-items:center;gap:12px;background:var(--amber-lt);border-bottom:3px solid #f5c27a;padding:14px 40px;font-family:"Montserrat",sans-serif;font-weight:700;font-size:16px;color:var(--amber)}
+.b429.show{display:flex}
+
+/* KPIs */
+.kpi-section{padding:36px 48px 20px}
+.kpi-section-lbl{font-family:"Montserrat",sans-serif;font-weight:800;font-size:13px;letter-spacing:.8px;text-transform:uppercase;color:var(--g3);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.kpi-section-lbl::after{content:"";flex:1;height:1px;background:var(--black3)}
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;max-width:900px;margin:0 auto}
+.kpi{background:var(--black);border:1px solid var(--black3);border-radius:12px;overflow:hidden;box-shadow:var(--sh)}
+.kpi-top{padding:12px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--black3)}
+.kpi-top span{font-family:"Montserrat",sans-serif;font-weight:700;font-size:13px;color:var(--g3);text-transform:uppercase;letter-spacing:.5px}
+.kdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.kpi-b{padding:28px 20px}
+.kval{font-family:"Montserrat",sans-serif;font-weight:900;font-size:80px;line-height:1;letter-spacing:-3px}
+.kval.c-purple{color:#a78bfa}
+.kval.c-teal{color:#34d399}
+.ksub{font-family:"Montserrat",sans-serif;font-size:14px;color:var(--g3);margin-top:8px;line-height:1.4}
+
+/* FILTROS */
+.fbar{background:var(--black);border-top:1px solid var(--black3);border-bottom:1px solid var(--black3);padding:12px 40px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.fbar label{font-family:"Montserrat",sans-serif;font-size:12px;font-weight:700;color:var(--g4);text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.fbar select{border:1px solid var(--black3);border-radius:5px;background:var(--black2);color:var(--g3);padding:6px 12px;font-size:14px;font-family:"Montserrat",sans-serif;font-weight:600;outline:none;min-width:140px}
+.fbar select:focus{border-color:var(--red)}
+.fsep{width:1px;height:24px;background:var(--black3)}
+.fbar-info{margin-left:auto;font-family:"Montserrat",sans-serif;font-size:13px;color:var(--g4);font-weight:700}
+
+/* KANBAN 2 COLUNAS */
+.kanban{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:start}
+.col{border-radius:10px;overflow:hidden;border:1px solid var(--black3)}
+.col-hdr{background:var(--black);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.col-hw{display:flex;align-items:center;gap:10px}
+.col-bar{width:5px;height:20px;border-radius:2px}
+.col-todo .col-bar{background:#3b82f6}
+.col-doing .col-bar{background:#f59e0b}
+.col-name{font-family:"Montserrat",sans-serif;font-weight:800;font-size:14px;color:#fff;text-transform:uppercase;letter-spacing:.5px}
+.col-cnt{font-family:"Montserrat",sans-serif;font-weight:800;font-size:14px;padding:4px 12px;border-radius:4px}
+.col-todo .col-cnt{background:#1e3a5f;color:#93c5fd}
+.col-doing .col-cnt{background:#3d2800;color:#fcd34d}
+.col-body{background:#222;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:100px}
+
+.card{background:var(--black);border:1px solid var(--black3);border-radius:8px;overflow:hidden;transition:border-color .2s}
+.card:hover{border-color:var(--g4)}
+.card.new-task{border-color:var(--red)!important;animation:glow 2s ease-in-out 3}
+@keyframes glow{0%,100%{box-shadow:none}50%{box-shadow:0 0 20px rgba(204,16,16,.7)}}
+.card-top{height:4px}
+.card-top.urgent{background:var(--red)}
+.card-top.high{background:#f59e0b}
+.card-top.normal{background:#3b82f6}
+.card-top.low{background:var(--g4)}
+.card-b{padding:14px 16px}
+.card-proj{font-family:"Montserrat",sans-serif;font-size:11px;font-weight:700;color:var(--g4);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+.card-title{font-family:"Montserrat",sans-serif;font-weight:700;font-size:18px;color:#fff;line-height:1.4;margin-bottom:12px}
+.card-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-family:"Montserrat",sans-serif;font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.tag.urgent{background:rgba(204,16,16,.2);color:#fca5a5;border:1px solid rgba(204,16,16,.3)}
+.tag.high{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.tag.normal{background:rgba(59,130,246,.1);color:#93c5fd;border:1px solid rgba(59,130,246,.2)}
+.tag.low{background:rgba(160,160,160,.1);color:var(--g3);border:1px solid var(--black3)}
+.tag.dead{background:rgba(160,160,160,.1);color:var(--g3);border:1px solid var(--black3)}
+.tag.dead.venc{background:rgba(204,16,16,.15);color:#fca5a5;border:1px solid rgba(204,16,16,.3)}
+.card-foot{border-top:1px solid var(--black3);padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-user{display:flex;align-items:center;gap:10px;min-width:0}
+.av{width:30px;height:30px;border-radius:50%;background:var(--black3);color:#fff;font-family:"Montserrat",sans-serif;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--g4)}
+.av-name{font-size:13px;color:var(--g3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.card-time{font-family:"Montserrat",sans-serif;font-size:12px;color:var(--g4);white-space:nowrap;flex-shrink:0}
+.card-time.late{color:#fca5a5;font-weight:700}
+
+.empty{text-align:center;padding:4rem 1rem;font-family:"Montserrat",sans-serif;font-size:14px;color:var(--g4);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.loading{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:16px;padding:6rem}
+.spin-big{width:40px;height:40px;border:4px solid var(--black3);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite}
+.spin-lbl{font-family:"Montserrat",sans-serif;font-weight:700;font-size:15px;color:var(--g4);text-transform:uppercase;letter-spacing:.6px}
+
+/* RODAPÉ */
+.app-foot{padding:12px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--black);border-top:1px solid var(--black3)}
+.foot-txt{font-family:"Montserrat",sans-serif;font-size:12px;color:var(--g4);font-weight:600}
+.foot-txt b{color:var(--g3)}
+
+/* POPUP */
+.popup-queue{position:fixed;bottom:40px;right:40px;z-index:500;display:flex;flex-direction:column;gap:16px;align-items:flex-end;pointer-events:none}
+.popup-item{background:var(--black);border:3px solid var(--red);border-radius:14px;width:500px;max-width:calc(100vw - 80px);box-shadow:0 0 50px rgba(204,16,16,.5);pointer-events:auto;overflow:hidden;transform:translateX(520px);transition:transform .35s cubic-bezier(.22,.61,.36,1)}
+.popup-item.show{transform:translateX(0)}
+.popup-item.hide{transform:translateX(520px)}
+.popup-hdr{background:var(--red);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-radius:12px 12px 0 0}
+.popup-hdr-l{display:flex;align-items:center;gap:12px}
+.popup-ico{font-size:24px}
+.popup-titulo{font-family:"Montserrat",sans-serif;font-weight:800;font-size:17px;color:#fff;letter-spacing:.3px}
+.popup-close{background:rgba(255,255,255,.25);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;font-family:"Montserrat",sans-serif;font-weight:700;transition:background .15s}
+.popup-close:hover{background:rgba(255,255,255,.4)}
+.popup-body{padding:22px 24px}
+.popup-tarefa{font-family:"Montserrat",sans-serif;font-weight:700;font-size:19px;color:#fff;line-height:1.4;margin-bottom:14px}
+.popup-meta{display:flex;gap:10px;flex-wrap:wrap}
+.popup-tag{font-family:"Montserrat",sans-serif;font-size:12px;font-weight:700;padding:5px 12px;border-radius:4px;text-transform:uppercase;letter-spacing:.3px}
+.popup-tag.proj{background:var(--black2);color:var(--g3);border:1px solid var(--black3)}
+.popup-tag.prio-urgent{background:rgba(204,16,16,.2);color:#fca5a5;border:1px solid rgba(204,16,16,.3)}
+.popup-tag.prio-high{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.popup-tag.prio-normal{background:rgba(59,130,246,.1);color:#93c5fd;border:1px solid rgba(59,130,246,.2)}
+.popup-tag.prio-low{background:var(--black2);color:var(--g3);border:1px solid var(--black3)}
+.popup-resp{font-family:"Montserrat",sans-serif;font-size:14px;color:var(--g3);margin-top:14px;display:flex;align-items:center;gap:8px}
+.popup-prog{height:4px;background:var(--black3);border-radius:0 0 12px 12px;overflow:hidden}
+.popup-prog-bar{height:100%;background:var(--red);width:100%;transition:width linear;border-radius:0 0 12px 12px}
+
+@media(max-width:1000px){.kpi-grid{grid-template-columns:1fr;max-width:100%}.kanban{grid-template-columns:1fr}}
+@media(max-width:600px){.nav,.kpi-section,.kb-section,.fbar,.app-foot{padding-left:20px;padding-right:20px}.kval{font-size:60px}}
+</style>
+</head>
+<body>
+
+<div class="stripe"></div>
+
+<!-- NAV LOGIN -->
+<nav class="nav" id="nav-login">
+  <div class="brand">
+    <div>
+      <img style="height:30px;object-fit:contain" src="https://www.inova.ind.br/assets/img/logoInova.png" alt="Inova"
+           onerror="this.style.display='none';document.getElementById('fb1').style.display='flex'">
+      <div id="fb1" style="display:none;flex-direction:column">
+        <div class="logo-txt">IN<b>O</b>VA</div>
+        <div class="logo-sm">Sistemas Eletrônicos</div>
+      </div>
+    </div>
+    <div class="brand-sep"></div>
+    <span class="page-lbl">Atendimentos à Produção</span>
+  </div>
+</nav>
+
+<!-- NAV APP -->
+<nav class="nav" id="nav-app" style="display:none">
+  <div class="brand">
+    <div>
+      <img style="height:30px;object-fit:contain" src="https://www.inova.ind.br/assets/img/logoInova.png" alt="Inova"
+           onerror="this.style.display='none';document.getElementById('fb2').style.display='flex'">
+      <div id="fb2" style="display:none;flex-direction:column">
+        <div class="logo-txt">IN<b>O</b>VA</div>
+        <div class="logo-sm">Sistemas Eletrônicos</div>
+      </div>
+    </div>
+    <div class="brand-sep"></div>
+    <span class="page-lbl">Atendimentos à Produção</span>
+  </div>
+  <div class="nav-r">
+    <div class="nav-pill">
+      <div class="sdot" id="sdot"></div>
+      <span class="stxt" id="stxt">—</span>
+      <span class="cdtxt" id="cdtxt"></span>
+    </div>
+    <button class="btn" id="btn-ref" onclick="carregarManual()">↻ Atualizar</button>
+    <button class="btn" onclick="sair()">Sair</button>
+  </div>
+</nav>
+
+<!-- TELA LOGIN -->
+<div id="tela-login" class="login-bg">
+  <div class="login-card" id="login-card">
+    <div class="lhdr">
+      <div class="lhdr-ico">📋</div>
+      <div>
+        <h2>Importar do RunRun.it</h2>
+        <p>Conecte com sua conta e selecione um quadro</p>
+      </div>
+    </div>
+    <div class="lbody">
+      <!-- APP-TOKEN -->
+      <div class="frow">
+        <label>APP-TOKEN</label>
+        <input id="inp-ak" type="password" placeholder="App-Key da aplicação" autocomplete="off">
+      </div>
+      <div class="frow" style="margin-bottom:8px">
+        <button class="btn" id="btn-test" onclick="testarConexao()" style="width:100%;justify-content:center;padding:10px;font-size:14px">✔ Testar conexão</button>
+      </div>
+      <!-- USER-TOKEN -->
+      <div class="frow">
+        <label>USER-TOKEN</label>
+        <input id="inp-tk" type="password" placeholder="Token pessoal" autocomplete="off">
+      </div>
+      <!-- CONFIGURAÇÕES -->
+      <div class="fgrid">
+        <div class="frow">
+          <label>Atualizar a cada</label>
+          <select id="inp-iv">
+            <option value="300">5 minutos</option>
+            <option value="600" selected>10 minutos</option>
+            <option value="900">15 minutos</option>
+            <option value="1800">30 minutos</option>
+            <option value="0">Manual</option>
+          </select>
+        </div>
+        <div class="frow">
+          <label>Período MTTR/MTBF</label>
+          <select id="inp-per">
+            <option value="7">7 dias</option>
+            <option value="30" selected>30 dias</option>
+            <option value="90">90 dias</option>
+            <option value="0">Tudo</option>
+          </select>
+        </div>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="chk-salvar" checked>
+        <label for="chk-salvar">Salvar credenciais</label>
+      </div>
+      <!-- Seletor de quadro (aparece após teste OK) -->
+      <div class="frow" id="frow-board" style="display:none">
+        <label>Quadro</label>
+        <select id="sel-board" style="width:100%"></select>
+      </div>
+      <!-- Mensagens de erro/ok -->
+      <div class="msg-err" id="msg-err"></div>
+      <div class="msg-ok" id="msg-ok"></div>
+      <!-- Loading inline -->
+      <div class="login-spin" id="login-spin">
+        <div class="spin-big"></div>
+        <span style="color:var(--g3)">Verificando...</span>
+      </div>
+    </div>
+    <div class="lfoot">
+      <button class="btn primary full" id="btn-conn" disabled onclick="conectarQuadro()">Conectar ao quadro</button>
+    </div>
+  </div>
+</div>
+
+<!-- TELA APP -->
+<div id="tela-app" class="app">
+  <div class="b429" id="b429">
+    ⚠ Limite de requisições (429) — aguardando <strong id="rcd">—</strong> para tentar novamente.
+  </div>
+  <div class="kpi-section">
+    <div class="kpi-section-lbl">Indicadores · <span id="kpi-per" style="font-weight:600;color:var(--g4)"></span></div>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-top"><div class="kdot" style="background:#a78bfa"></div><span>MTTR</span></div>
+        <div class="kpi-b"><div class="kval c-purple" id="k-mttr">—</div><div class="ksub" id="k-mttr-s">tempo médio de reparo</div></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-top"><div class="kdot" style="background:#34d399"></div><span>MTBF</span></div>
+        <div class="kpi-b"><div class="kval c-teal" id="k-mtbf">—</div><div class="ksub" id="k-mtbf-s">entre ocorrências</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="fbar">
+    <label>Prioridade</label>
+    <select id="f-prio" onchange="render()">
+      <option value="">Todas</option>
+      <option value="urgent">Urgente</option>
+      <option value="high">Alta</option>
+      <option value="normal">Normal</option>
+      <option value="low">Baixa</option>
+    </select>
+    <div class="fsep"></div>
+    <label>Ordenar</label>
+    <select id="f-sort" onchange="render()">
+      <option value="prio">Prioridade</option>
+      <option value="tempo">Mais antigo</option>
+      <option value="dead">Prazo</option>
+    </select>
+    <div class="fbar-info" id="f-info"></div>
+  </div>
+  <div class="kb-section" style="padding-top:24px">
+    <div class="kb-section-lbl">Quadro de Atendimentos <span class="kb-lbl-name" id="kb-lbl"></span></div>
+    <div class="kanban" id="kanban">
+      <div class="loading">
+        <div class="spin-big"></div>
+        <div class="spin-lbl">Carregando...</div>
+      </div>
+    </div>
+  </div>
+  <div class="app-foot">
+    <div class="foot-txt">Quadro: <b id="ft-board">—</b></div>
+    <div class="foot-txt" id="ft-upd">—</div>
+  </div>
+</div>
+
+<div class="popup-queue" id="popup-queue"></div>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════════════════════
+   CREDENCIAIS SALVAS
+   ══════════════════════════════════════════════════════ */
+const savedAk = localStorage.getItem('painel_ak');
+const savedTk = localStorage.getItem('painel_tk');
+if (savedAk) document.getElementById('inp-ak').value = savedAk;
+if (savedTk) document.getElementById('inp-tk').value = savedTk;
+document.getElementById('chk-salvar').checked = !!(savedAk && savedTk);
+
+/* ══════════════════════════════════════════════════════
+   GLOBAIS
+   ══════════════════════════════════════════════════════ */
+let CFG = { ak:'', tk:'', interval:600, periodo:30, boardId:null };
+let ABERTAS = [];
+let FECHADAS = [];
+let BOARDS = [];
+let IDS_CONHECIDOS = new Set();
+let PRIMEIRO_LOAD = true;
+
+let _auto=null, _cd=null, _retry=null, _nextAt=null, _retryDelay=120;
+
+const PK = {1:'urgent',2:'high',3:'normal',4:'low'};
+const PL = {urgent:'Urgente',high:'Alta',normal:'Normal',low:'Baixa'};
+const PO = {urgent:0,high:1,normal:2,low:3};
+const pk = p => typeof p==='number'?(PK[p]||'normal'):String(p||'normal').toLowerCase();
+
+/* ══════════════════════════════════════════════════════
+   API E TESTE DE CONEXÃO
+   ══════════════════════════════════════════════════════ */
+async function api(path, tempAk=null, tempTk=null){
+  const ak = tempAk || CFG.ak;
+  const tk = tempTk || CFG.tk;
+  const r = await fetch('https://runrun.it/api/v1.0'+path, {
+    headers:{'App-Key':ak,'User-Token':tk,'Content-Type':'application/json'}
+  });
+  if (r.status===429) {
+    const ra = parseInt(r.headers.get('Retry-After')||'0');
+    throw {is429:true, wait:ra>0?ra:_retryDelay};
+  }
+  if (!r.ok) throw new Error('Erro '+r.status+' — '+path);
+  return r.json();
+}
+
+async function apiAll(base, tempAk, tempTk){
+  let all=[], page=1;
+  while(page<=5){
+    const sep = base.includes('?')?'&':'?';
+    const chunk = await api(base+sep+'limit=200&page='+page, tempAk, tempTk);
+    if(!Array.isArray(chunk)||chunk.length===0) break;
+    all = [...all, ...chunk];
+    if(chunk.length<200) break;
+    page++;
+  }
+  return all;
+}
+
+async function testarConexao(){
+  const ak = v('inp-ak'), tk = v('inp-tk');
+  const btnTest = g('btn-test');
+  const msgErr = g('msg-err'), msgOk = g('msg-ok');
+  const spin = g('login-spin');
+  const btnConn = g('btn-conn');
+  const frowBoard = g('frow-board');
+  const selBoard = g('sel-board');
+
+  msgErr.style.display='none';
+  msgOk.style.display='none';
+  btnTest.disabled = true;
+  spin.style.display='block';
+
+  try {
+    const boards = await api('/boards?limit=200', ak, tk);
+    if (!Array.isArray(boards)) throw new Error('Resposta inválida');
+    BOARDS = boards;
+    selBoard.innerHTML = boards.map(b => `<option value="${b.id}">${esc(b.name)} (ID: ${b.id})</option>`).join('');
+    frowBoard.style.display = 'block';
+    btnConn.disabled = false;
+    msgOk.textContent = 'Conexão OK! Selecione um quadro e clique em "Conectar ao quadro".';
+    msgOk.style.display = 'block';
+    if (boards.length === 1) {
+      selBoard.value = boards[0].id;
+    }
+  } catch(e) {
+    msgErr.textContent = 'Falha na conexão: ' + (e.message || 'Verifique as credenciais');
+    msgErr.style.display = 'block';
+    btnConn.disabled = true;
+    frowBoard.style.display = 'none';
+  } finally {
+    btnTest.disabled = false;
+    spin.style.display = 'none';
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   CONECTAR AO QUADRO (CORRIGIDO)
+   ══════════════════════════════════════════════════════ */
+function conectarQuadro(){
+  const ak = v('inp-ak'), tk = v('inp-tk');
+  const boardId = v('sel-board');
+  if(!ak||!tk||!boardId) return;
+
+  CFG = {
+    ak, tk,
+    interval: +v('inp-iv') || 600,
+    periodo: +v('inp-per') || 30,
+    boardId: boardId
+  };
+
+  // Salvar credenciais se marcado
+  if (g('chk-salvar').checked) {
+    localStorage.setItem('painel_ak', ak);
+    localStorage.setItem('painel_tk', tk);
+  } else {
+    localStorage.removeItem('painel_ak');
+    localStorage.removeItem('painel_tk');
+  }
+
+  // Esconder tela de login, mostrar app
+  g('login-card').style.display='none';
+  g('tela-login').style.display='none';
+  g('nav-login').style.display='none';
+  g('nav-app').style.display='flex';
+  g('tela-app').style.display='flex';
+
+  carregarTudo();
+}
+
+/* ══════════════════════════════════════════════════════
+   CARREGAMENTO INICIAL (filtrado pelo quadro)
+   ══════════════════════════════════════════════════════ */
+async function carregarTudo(){
+  try {
+    ABERTAS = await apiAll('/tasks?is_closed=false&board_id='+CFG.boardId);
+    try {
+      FECHADAS = await apiAll('/tasks?is_closed=true&board_id='+CFG.boardId);
+    } catch(ef) {
+      if(ef.is429) throw ef;
+      try { FECHADAS = await apiAll('/tasks?closed=true&board_id='+CFG.boardId); } catch(_){ FECHADAS=[]; }
+    }
+    _retryDelay = 120;
+    PRIMEIRO_LOAD = true;
+    mostrarApp();
+  } catch(e) {
+    if(e.is429) { _retryDelay = Math.min(_retryDelay*2,900); retry429(e.wait); return; }
+    showErr(e.message);
+  }
+}
+
+async function carregar(){
+  status('wait','Atualizando...');
+  g('btn-ref').disabled = true;
+  try {
+    const novas = await apiAll('/tasks?is_closed=false&board_id='+CFG.boardId);
+    if(!PRIMEIRO_LOAD){
+      const novosIds = novas.filter(t=>!IDS_CONHECIDOS.has(t.id));
+      novosIds.forEach(t=>mostrarPopup(t));
+    }
+    ABERTAS = novas;
+    ABERTAS.forEach(t=>IDS_CONHECIDOS.add(t.id));
+    PRIMEIRO_LOAD = false;
+
+    try { FECHADAS = await apiAll('/tasks?is_closed=true&board_id='+CFG.boardId); }
+    catch(ef) { if(ef.is429) throw ef; try { FECHADAS = await apiAll('/tasks?closed=true&board_id='+CFG.boardId); } catch(_){} }
+
+    _retryDelay = 120;
+    g('b429').classList.remove('show');
+    render();
+    const now = new Date();
+    status('ok','Atualizado às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));
+    g('ft-upd').textContent = 'Última atualização: '+now.toLocaleString('pt-BR');
+    agendar();
+  } catch(e) {
+    if(e.is429) { _retryDelay = Math.min(_retryDelay*2,900); retry429(e.wait); g('btn-ref').disabled=false; return; }
+    status('err',e.message.substring(0,60));
+    agendar();
+  } finally { g('btn-ref').disabled = false; }
+}
+
+function mostrarApp(){
+  g('tela-login').style.display='none';
+  g('nav-login').style.display='none';
+  g('nav-app').style.display='flex';
+  g('tela-app').style.display='flex';
+  g('kpi-per').textContent = CFG.periodo>0?'últimos '+CFG.periodo+' dias':'todo o histórico';
+  ABERTAS.forEach(t=>IDS_CONHECIDOS.add(t.id));
+  PRIMEIRO_LOAD = false;
+  render();
+  const now = new Date();
+  status('ok','Atualizado às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));
+  g('ft-upd').textContent = 'Última atualização: '+now.toLocaleString('pt-BR');
+  agendar();
+}
+
+/* ══════════════════════════════════════════════════════
+   POPUP
+   ══════════════════════════════════════════════════════ */
+const POPUP_DURACAO = 8000;
+function mostrarPopup(t){
+  const prio = pk(t.priority);
+  const proj = t.project_name ? `<span class="popup-tag proj">${esc(t.project_name)}</span>` : '';
+  const nome = (t.assignments||[])[0]?.assignee?.name||'—';
+  const item = document.createElement('div');
+  item.className='popup-item';
+  item.innerHTML=`
+    <div class="popup-hdr">
+      <div class="popup-hdr-l"><span class="popup-ico">🔔</span><span class="popup-titulo">Novo chamado aberto!</span></div>
+      <button class="popup-close" onclick="fecharPopup(this.closest('.popup-item'))">✕</button>
+    </div>
+    <div class="popup-body">
+      <div class="popup-tarefa">${esc(t.title||t.name||'Sem título')}</div>
+      <div class="popup-meta">${proj}<span class="popup-tag prio-${prio}">${PL[prio]||prio}</span></div>
+      <div class="popup-resp">👤 ${esc(nome)}</div>
+    </div>
+    <div class="popup-prog"><div class="popup-prog-bar" id="pb-${t.id}"></div></div>
+  `;
+  g('popup-queue').appendChild(item);
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>item.classList.add('show')); });
+  const bar = item.querySelector('.popup-prog-bar');
+  bar.style.transition=`width ${POPUP_DURACAO}ms linear`;
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ bar.style.width='0%'; }); });
+  setTimeout(()=>fecharPopup(item), POPUP_DURACAO);
+}
+function fecharPopup(item){
+  if(!item)return;
+  item.classList.remove('show'); item.classList.add('hide');
+  setTimeout(()=>item.remove(), 400);
+}
+
+/* ══════════════════════════════════════════════════════
+   FILTROS E RENDER (Kanban 2 colunas)
+   ══════════════════════════════════════════════════════ */
+function getFiltradas(){
+  const prio = v('f-prio'), sort = v('f-sort');
+  let ab = ABERTAS.filter(t=>{
+    if(prio && pk(t.priority)!==prio) return false;
+    return true;
+  });
+  ab.sort((a,b)=>{
+    if(sort==='prio') return (PO[pk(a.priority)]??2)-(PO[pk(b.priority)]??2);
+    if(sort==='tempo') return (pd(a.created_at)||0)-(pd(b.created_at)||0);
+    if(sort==='dead') return (pd(a.deadline)||Infinity)-(pd(b.deadline)||Infinity);
+    return 0;
+  });
+  return {ab, fe: FECHADAS};
+}
+
+function render(){
+  const {ab, fe} = getFiltradas();
+  renderKPIs(ab, fe);
+  renderKanban(ab);
+  const board = BOARDS.find(b=>String(b.id)===String(CFG.boardId));
+  g('ft-board').textContent = board ? board.name : '(quadro)';
+  g('kb-lbl').textContent = board ? '— '+board.name : '';
+}
+
+function renderKPIs(ab, fe){
+  const corte = CFG.periodo>0 ? Date.now()-CFG.periodo*86400000 : 0;
+  const concPer = fe.filter(t=>{
+    const f = pd(t.closed_at||t.completed_at||t.updated_at);
+    return f && (corte===0||f>=corte);
+  });
+  const reparos = concPer.map(t=>{
+    const i = pd(t.created_at||t.start_date), f = pd(t.closed_at||t.completed_at||t.updated_at);
+    return i&&f&&f>i ? f-i : null;
+  }).filter(v=>v!==null);
+  if(reparos.length){
+    const {val,unit} = fmtDur(reparos.reduce((a,b)=>a+b,0)/reparos.length);
+    g('k-mttr').textContent = val;
+    g('k-mttr-s').textContent = unit+' ('+reparos.length+' amostras)';
+  } else {
+    g('k-mttr').textContent = '—';
+    g('k-mttr-s').textContent = 'sem dados no período';
+  }
+  const datas = [...fe,...ab].map(t=>pd(t.created_at||t.start_date)).filter(d=>d&&(corte===0||d>=corte)).sort((a,b)=>a-b);
+  if(datas.length>1){
+    const ints = []; for(let i=1;i<datas.length;i++) ints.push(datas[i]-datas[i-1]);
+    const {val,unit} = fmtDur(ints.reduce((a,b)=>a+b,0)/ints.length);
+    g('k-mtbf').textContent = val;
+    g('k-mtbf-s').textContent = unit+' entre ocorrências';
+  } else {
+    g('k-mtbf').textContent = '—';
+    g('k-mtbf-s').textContent = 'dados insuficientes';
+  }
+}
+
+function mapStatus(t){
+  const s = (t.state||t.status||'').toLowerCase();
+  if(s.includes('closed')||s.includes('done')||s.includes('conclu')) return 'done';
+  if(s.includes('working')||s.includes('progress')||s.includes('andamento')) return 'doing';
+  return 'todo';
+}
+
+function renderKanban(lista){
+  const todo = lista.filter(t=>mapStatus(t)==='todo');
+  const doing = lista.filter(t=>mapStatus(t)==='doing');
+  g('kanban').innerHTML =
+    col('A Fazer','col-todo', todo) +
+    col('Em Andamento','col-doing', doing);
+  g('f-info').textContent = lista.length+' chamado'+(lista.length!==1?'s':'')+' exibido'+(lista.length!==1?'s':'');
+}
+
+function col(titulo, cls, items){
+  const cards = items.length ? items.map(card).join('') : '<div class="empty">Nenhum chamado</div>';
+  return `<div class="col ${cls}"><div class="col-hdr"><div class="col-hw"><div class="col-bar"></div><span class="col-name">${titulo}</span></div><span class="col-cnt">${items.length}</span></div><div class="col-body">${cards}</div></div>`;
+}
+
+function card(t){
+  const prio = pk(t.priority);
+  const nome = (t.assignments||[])[0]?.assignee?.name||'—';
+  const inic = nome.split(' ').slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'?';
+  const ini = pd(t.created_at||t.start_date);
+  const temMs = ini ? Date.now()-ini : null;
+  const temStr = temMs ? fmtDurC(temMs) : '';
+  const late = temMs && temMs>8*3600000;
+  let deadTag = '';
+  if(t.deadline){
+    try {
+      const dt = new Date(t.deadline); dt.setHours(0,0,0,0);
+      const hj = new Date(); hj.setHours(0,0,0,0);
+      deadTag = `<span class="tag dead${dt<hj?' venc':''}">${dt<hj?'⚠ ':''} ${dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}</span>`;
+    } catch(_){}
+  }
+  const proj = t.project_name ? `<div class="card-proj">${esc(t.project_name)}</div>` : '';
+  return `<div class="card"><div class="card-top ${prio}"></div><div class="card-b">${proj}<div class="card-title">${esc(t.title||t.name||'Sem título')}</div><div class="card-tags"><span class="tag ${prio}">${PL[prio]||prio}</span>${deadTag}</div><div class="card-foot"><div class="card-user"><div class="av">${inic}</div><span class="av-name">${esc(nome)}</span></div>${temStr?`<span class="card-time${late?' late':''}">${temStr}</span>`:''}</div></div></div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   RETRY / SCHEDULE
+   ══════════════════════════════════════════════════════ */
+function retry429(seg){
+  clearAuto(); clearRetry();
+  g('b429').classList.add('show');
+  status('err','Limite de requisições');
+  let r = seg;
+  const tick = ()=>{
+    const m = Math.floor(r/60), s = r%60;
+    g('rcd').textContent = m>0?m+'m '+s+'s':s+'s';
+    if(r<=0){ clearRetry(); g('b429').classList.remove('show'); carregar(); }
+    else r--;
+  };
+  tick(); _retry = setInterval(tick, 1000);
+}
+
+function agendar(){
+  clearAuto(); clearCd();
+  if(!CFG.interval){ g('cdtxt').textContent=''; return; }
+  _nextAt = Date.now() + CFG.interval*1000;
+  _auto = setTimeout(carregar, CFG.interval*1000);
+  _cd = setInterval(()=>{
+    const d = Math.max(0, Math.round((_nextAt-Date.now())/1000));
+    const m = Math.floor(d/60), s = d%60;
+    g('cdtxt').textContent = '• '+(m>0?m+'m ':'')+s+'s';
+    if(d===0) clearCd();
+  }, 1000);
+}
+
+function carregarManual(){ clearAuto(); clearCd(); clearRetry(); g('b429').classList.remove('show'); g('cdtxt').textContent=''; carregar(); }
+function clearAuto(){ clearTimeout(_auto); _auto=null; }
+function clearCd(){ clearInterval(_cd); _cd=null; g('cdtxt').textContent=''; }
+function clearRetry(){ clearInterval(_retry); _retry=null; }
+
+function status(tipo, txt){
+  g('sdot').className = 'sdot '+({ok:'ok',err:'err',wait:'wait'}[tipo]||'');
+  g('stxt').textContent = txt||'';
+}
+
+/* ══════════════════════════════════════════════════════
+   SAIR
+   ══════════════════════════════════════════════════════ */
+function sair(){
+  clearAuto(); clearCd(); clearRetry();
+  ABERTAS=[]; FECHADAS=[]; BOARDS=[]; IDS_CONHECIDOS=new Set(); PRIMEIRO_LOAD=true;
+  g('inp-ak').value='';
+  g('inp-tk').value='';
+  g('btn-conn').disabled=true;
+  g('msg-err').style.display='none';
+  g('msg-ok').style.display='none';
+  g('frow-board').style.display='none';
+  g('b429').classList.remove('show');
+  g('popup-queue').innerHTML='';
+  g('tela-app').style.display='none';
+  g('nav-app').style.display='none';
+  g('login-card').style.display='block';
+  g('tela-login').style.display='flex';
+  g('nav-login').style.display='flex';
+}
+
+/* ══════════════════════════════════════════════════════
+   HELPERS
+   ══════════════════════════════════════════════════════ */
+function fmtDur(ms){
+  const min = Math.round(ms/60000);
+  if(min<60) return {val:min, unit:'min'};
+  const h = ms/3600000;
+  if(h<24) return {val:h.toFixed(1), unit:'horas'};
+  return {val:(ms/86400000).toFixed(1), unit:'dias'};
+}
+function fmtDurC(ms){
+  const min = Math.round(ms/60000);
+  if(min<60) return min+'min';
+  const h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000);
+  if(h<24) return h+'h'+(m?m+'min':'');
+  return Math.floor(ms/86400000)+'d '+h%24+'h';
+}
+function g(id){ return document.getElementById(id); }
+function v(id){ return (g(id)?.value||'').trim(); }
+function pd(s){ if(!s) return null; const d=new Date(s); return isNaN(d)?null:d.getTime(); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function showErr(msg){ const e=g('msg-err'); e.textContent=msg; e.style.display='block'; }
+</script>
+</body>
+</html>
